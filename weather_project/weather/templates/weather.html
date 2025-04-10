@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            transition: background 0.5s ease-in-out;
+            margin: 50px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin: auto;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .weather-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body id="weather-body">
+    <div class="container">
+        <h1>Weather App</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="city" placeholder="Enter city name" required>
+            <button type="submit">Get Weather</button>
+        </form>
+
+        {% if weather %}
+        <div class="weather-info">
+            <h2>Weather in {{ weather.city }}</h2>
+            <p>Temperature: {{ weather.temperature }}</p>
+            <p>Humidity: {{ weather.humidity }}</p>
+            <p>Condition: <span id="weather-condition">{{ weather.condition }}</span></p>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let weatherConditionElement = document.getElementById("weather-condition");
+    
+            if (weatherConditionElement) {
+                let weatherCondition = weatherConditionElement.innerText.trim();
+                let body = document.getElementById("weather-body");
+    
+                let weatherBackgrounds = {
+                    "Clear Sky": "url('https://source.unsplash.com/1600x900/?clear,sky')",
+                    "Few Clouds": "url('https://source.unsplash.com/1600x900/?cloudy,sky')",
+                    "Scattered Clouds": "url('https://source.unsplash.com/1600x900/?cloudy')",
+                    "Broken Clouds": "url('https://source.unsplash.com/1600x900/?clouds')",
+                    "Shower Rain": "url('https://source.unsplash.com/1600x900/?rainy,storm')",
+                    "Rain": "url('https://source.unsplash.com/1600x900/?rain')",
+                    "Thunderstorm": "url('https://source.unsplash.com/1600x900/?thunderstorm')",
+                    "Snow": "url('https://source.unsplash.com/1600x900/?snow')",
+                    "Mist": "url('https://source.unsplash.com/1600x900/?mist')"
+                };
+    
+                console.log("Weather Condition:", weatherCondition); // Debugging
+    
+                if (weatherCondition in weatherBackgrounds) {
+                    body.style.backgroundImage = weatherBackgrounds[weatherCondition];
+                } else {
+                    body.style.backgroundImage = "url('https://source.unsplash.com/1600x900/?weather')";
+                }
+            } else {
+                console.log("Weather data not available yet.");
+            }
+        });
+    </script>    
+</body>
+</html>
