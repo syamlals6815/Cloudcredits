@@ -1,0 +1,62 @@
+{% extends 'todo_app/base.html' %}
+
+{% block title %}Todo List{% endblock %}
+
+{% block content %}
+{% load static %}
+<div class="task-container">
+    <div class="add-task">
+        <h2>Add New Task</h2>
+        <form method="post" action="{% url 'todo_list' %}" class="add-task-form">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="title" placeholder="Enter a task..." required>
+                <button type="submit" name="add_task" class="btn add-btn">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="tasks-list">
+        <h2>My Tasks</h2>
+        {% if tasks %}
+            <ul class="tasks">
+                {% for task in tasks %}
+                <li class="task-item {% if task.completed %}completed{% endif %}">
+                    <div class="task-content">
+                        <span class="task-title">{{ task.title }}</span>
+                        <span class="task-date">{{ task.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="task-actions">
+                        <form method="post" action="{% url 'todo_list' %}" class="task-action-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" name="complete_task" class="btn toggle-btn">
+                                {% if task.completed %}
+                                <i class="fas fa-undo"></i>
+                                {% else %}
+                                <i class="fas fa-check"></i>
+                                {% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'todo_list' %}" class="task-action-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" name="delete_task" class="btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="no-tasks">
+                <img src="{% static 'todo_app/images/task_complete.png' %}" alt="No tasks" class="no-tasks-img">
+                <p>No tasks yet! Add your first task above.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
