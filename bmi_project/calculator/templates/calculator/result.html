@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Result</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Your BMI Result</h1>
+        </header>
+        
+        <div class="result-card">
+            <div class="result-header">
+                <h2>Your BMI: <span class="bmi-value">{{ bmi }}</span></h2>
+                <div class="category-badge {{ category|lower }}">
+                    {{ category }}
+                </div>
+            </div>
+            
+            <div class="result-details">
+                <div class="result-image">
+                    <img src="{% static 'images/'|add:image %}" alt="{{ category }} BMI category">
+                </div>
+                
+                <div class="result-info">
+                    <h3>What this means:</h3>
+                    <p>{{ description }}</p>
+                    
+                    <div class="measurements-summary">
+                        <h4>Your Measurements:</h4>
+                        <ul>
+                            {% if unit_system == 'metric' %}
+                                <li>Weight: {{ weight }} kg</li>
+                                <li>Height: {{ height }} m</li>
+                            {% else %}
+                                <li>Weight: {{ weight }} lbs</li>
+                                <li>Height: {{ height }} ft {% if height_in %}{{ height_in }} in{% endif %}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="bmi-scale">
+                        <div class="scale-container">
+                            <div class="scale-marker underweight" title="Underweight: Below 18.5"></div>
+                            <div class="scale-marker normal" title="Normal: 18.5-24.9"></div>
+                            <div class="scale-marker overweight" title="Overweight: 25-29.9"></div>
+                            <div class="scale-marker obese" title="Obese: 30 and above"></div>
+                            
+                            <!-- BMI indicator triangle - positioned based on BMI value -->
+                            
+                        </div>
+                        <div class="scale-labels">
+                            <span>15</span>
+                            <span>20</span>
+                            <span>25</span>
+                            <span>30</span>
+                            <span>35</span>
+                            <span>40</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="disclaimer">
+                <p><strong>Remember:</strong> BMI is just one indicator of health and doesn't account for factors like muscle mass, bone density, and individual differences. For a more comprehensive assessment, consult with a healthcare professional.</p>
+            </div>
+            
+            <div class="actions">
+                <a href="{% url 'calculator:index' %}" class="btn">Calculate Again</a>
+            </div>
+        </div>
+    </div>
+    
+    {% load bmi_filters %}
+</body>
+</html>
+

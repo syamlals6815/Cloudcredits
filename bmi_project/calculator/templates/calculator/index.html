@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BMI Calculator</h1>
+            <p class="subtitle">Calculate your Body Mass Index to check if you're at a healthy weight</p>
+        </header>
+        
+        <div class="calculator-card">
+            <div class="form-container">
+                <form method="post" action="{% url 'calculator:calculate' %}" id="bmi-form">
+                    {% csrf_token %}
+                    
+                    <div class="unit-selector">
+                        <h3>Select Measurement System</h3>
+                        <div class="radio-group">
+                            {{ form.unit_system }}
+                        </div>
+                    </div>
+                    
+                    <div class="input-section metric-inputs">
+                        <h3>Metric Measurements</h3>
+                        <div class="form-group">
+                            <label for="{{ form.weight_kg.id_for_label }}">{{ form.weight_kg.label }}</label>
+                            {{ form.weight_kg }}
+                            {% if form.weight_kg.errors %}
+                                <div class="error">{{ form.weight_kg.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.height_m.id_for_label }}">{{ form.height_m.label }}</label>
+                            {{ form.height_m }}
+                            {% if form.height_m.errors %}
+                                <div class="error">{{ form.height_m.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="input-section imperial-inputs" style="display: none;">
+                        <h3>Imperial Measurements</h3>
+                        <div class="form-group">
+                            <label for="{{ form.weight_lbs.id_for_label }}">{{ form.weight_lbs.label }}</label>
+                            {{ form.weight_lbs }}
+                            {% if form.weight_lbs.errors %}
+                                <div class="error">{{ form.weight_lbs.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group height-imperial">
+                            <label>Height</label>
+                            <div class="imperial-height-inputs">
+                                <div>
+                                    {{ form.height_ft }}
+                                    <span>ft</span>
+                                </div>
+                                <div>
+                                    {{ form.height_in }}
+                                    <span>in</span>
+                                </div>
+                            </div>
+                            {% if form.height_ft.errors %}
+                                <div class="error">{{ form.height_ft.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="button-container">
+                        <button type="submit" class="calculate-btn">Calculate BMI</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="bmi-info">
+                <h3>What is BMI?</h3>
+                <p>Body Mass Index (BMI) is a value derived from an individual's weight and height. It provides a simple numeric measure of a person's thickness or thinness, allowing health professionals to discuss weight issues objectively with their patients.</p>
+                
+                <h3>BMI Categories:</h3>
+                <ul>
+                    <li><strong>Below 18.5:</strong> Underweight</li>
+                    <li><strong>18.5 - 24.9:</strong> Normal weight</li>
+                    <li><strong>25.0 - 29.9:</strong> Overweight</li>
+                    <li><strong>30.0 and above:</strong> Obese</li>
+                </ul>
+                
+                <div class="disclaimer">
+                    <p><strong>Note:</strong> BMI is a screening tool, not a diagnostic tool. It does not take into account factors like muscle mass, bone density, overall body composition, or racial and sex differences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript to toggle between metric and imperial inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const metricInputs = document.querySelector('.metric-inputs');
+            const imperialInputs = document.querySelector('.imperial-inputs');
+            const unitRadios = document.getElementsByName('unit_system');
+            
+            function toggleInputs() {
+                if (document.querySelector('input[name="unit_system"]:checked').value === 'metric') {
+                    metricInputs.style.display = 'block';
+                    imperialInputs.style.display = 'none';
+                } else {
+                    metricInputs.style.display = 'none';
+                    imperialInputs.style.display = 'block';
+                }
+            }
+            
+            // Set initial state
+            toggleInputs();
+            
+            // Add event listeners to radio buttons
+            for (let radio of unitRadios) {
+                radio.addEventListener('change', toggleInputs);
+            }
+        });
+    </script>
+</body>
+</html>
